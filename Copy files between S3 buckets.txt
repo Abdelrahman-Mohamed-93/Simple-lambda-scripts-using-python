@@ -1,0 +1,50 @@
+Lambda_policy to be attached to the lambda IAM role:
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::source-474843117075-bucket/*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": [
+                "arn:aws:s3:::source-474843117075-bucket",
+                "arn:aws:s3:::source-474843117075-bucket/*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::destination-474843117075-bucket/*"
+        }
+    ]
+}
+
+Python code for copying files from source to destination bucket:
+
+import boto3
+import json
+
+s3 = boto3.resource('s3')
+
+def lambda_handler (event, context):
+ bucket = s3.Bucket('source-474843117075-bucket')
+ dest_bucket=s3.Bucket('destination-474843117075-bucket')
+
+ print(dest_bucket)
+ print(bucket)
+ 
+ for obj in bucket.objects.filter(Delimiter='/'):
+  dest_key=obj.key
+  print(dest_key)
+  print('copy file ' + dest_key)
+  s3.Object(dest_bucket.name, dest_key).copy_from(CopySource= {'Bucket': obj.bucket_name, 'Key': obj.key})
+  print('delete file from source bucket ' + dest_key)
+  s3.Object(bucket.name, obj.key).delete()
