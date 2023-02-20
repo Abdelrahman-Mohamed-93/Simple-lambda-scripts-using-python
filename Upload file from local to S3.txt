@@ -1,20 +1,3 @@
-1. IAM role's policy to be attached to Lambda function in the next step
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::my-474843117075-bucket/*"
-        }
-    ]
-}
-
-
-2. Change default execution role during the creation of Lambda function to attach the IAM Role
-
-3. The code, where the handler is a must to avoid errors and here we used boto3.client instead of boto3.resource as it's the one that has upload_file option 
 def lambda_handler(event, context):   
     return None
 
